@@ -1,0 +1,34 @@
+# -----------------------------------------------
+# Docker Setup for WordPress and MySQL
+# Author: Juma Omondi John Paul
+# -----------------------------------------------
+
+# Pull the latest Docker images
+sudo docker pull mysql:latest
+sudo docker pull wordpress:latest
+
+# Create a Docker network (recommended modern method)
+sudo docker network create learnly-net
+
+# Run MySQL container
+sudo docker run --name mysql-container \
+  --network learnly-net \
+  -e MYSQL_ROOT_PASSWORD=rootpass \
+  -e MYSQL_DATABASE=wordpress \
+  -d mysql:latest
+
+# Run WordPress container on port 8080
+sudo docker run --name wordpress-container \
+  --network learnly-net \
+  -p 8080:80 \
+  -e WORDPRESS_DB_HOST=mysql-container:3306 \
+  -e WORDPRESS_DB_USER=root \
+  -e WORDPRESS_DB_PASSWORD=rootpass \
+  -e WORDPRESS_DB_NAME=wordpress \
+  -d wordpress:latest
+
+# List running containers
+sudo docker ps
+
+# Access WordPress setup page:
+# http://<your-ec2-public-ip>:8080
